@@ -16,7 +16,7 @@ for i in range(0,512,sz):
 for i in range(sz_per_row**2):
     for j in range(sz):
         for k in range(sz):
-            c[i,j,k]=b[i,j,k,0]**0.299 + b[i,j,k,1]*0.587 + b[i,j,k,2]*0.114
+            c[i,j,k]=b[i,j,k,0]*0.299 + b[i,j,k,1]*0.587 + b[i,j,k,2]*0.114
 
 
 
