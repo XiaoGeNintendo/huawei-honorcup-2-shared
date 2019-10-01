@@ -23,12 +23,12 @@ for i in range(sz_per_row**2):
 with open('D:\\Personal\\Workspace\\output.txt','w') as f:
     for i in range(sz):
         for j in range(sz):
-            f.write(str(c[31,i,j])+' ')
+            f.write(str(c[32,i,j])+' ')
         f.write('\n')
 
     f.write('\n'*20)
 
     for i in range(sz):
         for j in range(sz):
-            f.write(str(c[20,i,j])+' ')
+            f.write(str(c[21,i,j])+' ')
         f.write('\n')
