@@ -13,7 +13,7 @@
 #include <stack>
 #include <chrono>
 #include <time.h>
-#include <E:\C++\dev c++\ShiMaoC++\����\HuaweiHonorCup\JudgeAdjacent.h>
+#include <E:\C++\dev c++\ShiMaoC++\¿¼ÊÔ\HuaweiHonorCup\JudgeAdjacent.h>
 #define Endl endl
 #define mp make_pair
 #define ll long long 
@@ -143,10 +143,12 @@ inline double calcAhasB(int pos,int value)
 
 inline bool isadj(int x,int y)
 {
-	return (abs(x-y)==1 || abs(x-y)==8);
+	if(x>y) swap(x,y);
+	return (y-x==8 || (y-x==1 && y%8!=0));
+//	return (abs(x-y)==1 || abs(x-y)==8);
 }
 
-inline double badadj(int x,int y)
+inline double badadj(int x,int y,int bad)
 {
 	int i=x/8;
 	int j=x%8;
@@ -154,20 +156,27 @@ inline double badadj(int x,int y)
 	{
 		if(((i+dx[d])*8+(j+dy[d]))==y)
 		{
-			return adj[now[x]][now[y]][i];
+			return adj[now[x]][now[y]][d^bad];
 		}
 	}
 	assert(false);
 }
 
-double calcswap(int x,int y)
+inline double calcswap(int x,int y)
 {
-	return calcAhasB(x,now[y])+calcAhasB(y,now[x])-calcAhasB(x,now[x])-calcAhasB(y,now[y])+(isadj(x,y)?badadj(x,y)+badadj(y,x):0);
+	if(isadj(x,y)) assert(badadj(x,y,0)==badadj(y,x,0));
+	if(isadj(x,y)) assert(badadj(x,y,2)==badadj(y,x,2));
+	return calcAhasB(x,now[y])+calcAhasB(y,now[x])-calcAhasB(x,now[x])-calcAhasB(y,now[y])+(isadj(x,y)?badadj(x,y,2)+badadj(x,y,0):0);
 }
 
 void dfs(double Time)
 {
-//	assert(cur==calc(now));
+//	if(cur!=calc(now))
+//	{
+//		cout<<cur<<' '<<calc(now)<<endl;
+//		exit(0);
+//	}
+	assert(cur==calc(now));
 //	cout<<Time<<endl;
 	if(cur>best)
 	{
@@ -187,13 +196,14 @@ void dfs(double Time)
 		{
 			x=rand(0,63);
 			y=rand(0,63);
-		}while(fix[x] || fix[y] || x==y);
+		}while(fix[x] || fix[y] || x==y/* || isadj(x,y)*/);
 		times++;
 		delta=calcswap(x,y);
 		if(times>=attempt) break;
 //		if(delta>0) break;
 		if(delta>0 || (delta!=0 && exp(discrete*delta/Time)>1.0*rand(0,1000000)/1000000)) break;
 	}while(true);
+//	cout<<x<<' '<<y<<endl;
 	if(times<attempt)
 	{
 		swap(now[x],now[y]);
@@ -220,19 +230,19 @@ void solve()
 			break;
 		}
 	}
-	fix[0]=true;
+//	fix[0]=true;
 //	best=calc(now);
 	cur=calc(now);
 	best=max(best,cur);
 	dfs(1);
-//	assert(calc(now)==cur);
-	cout<<best<<endl;
+	assert(calc(now)==cur);
+//	cout<<best<<endl;
 }
 
 int main()
 {
 	freopen("1200.txt","r",stdin);
-//	freopen("�׶��Գɹ�.txt","w",stdout);
+//	freopen("½×¶ÎÐÔ³É¹û.txt","w",stdout);
 	ios_base::sync_with_stdio(false);
 	for(int i=0;i<64;i++)
 	{
@@ -262,7 +272,30 @@ int main()
 		cin>>now[i];
 	}
 //	cout<<"DONE\n";
+	for(int i=0;i<64;i++)
+	{
+		for(int j=0;j<64;j++)
+		{
+			if(i==j) continue;
+			double t=calc(now)+calcswap(i,j);
+			swap(now[i],now[j]);
+			double tt=calc(now);
+			if(tt!=t)
+			{
+				cout<<i<<' '<<j<<endl;
+				return 0;
+			}
+			swap(now[i],now[j]);
+		}
+	}
 //	cout<<calc(now)<<endl;
+//	cout<<calcswap(48,47)<<endl;
+//	cout<<calc(now)+calcswap(48,47)<<endl;
+//	swap(now[48],now[47]);
+//	cout<<calc(now)<<endl;
+//	return 0;
+	freopen("shit.txt","w",stdout);
+	cout<<"1200.png\n";
 	for(int i=0;i<100;i++)
 	{
 		solve();
@@ -273,8 +306,9 @@ int main()
 		{
 			cout<<choose[i*8+j]<<' ';
 		}
-		cout<<endl;
+		cout<<' ';
+//		cout<<endl;
 	}
-	cout<<calc(choose)<<endl;
+//	cout<<calc(choose)<<endl;
 	return 0;
 }
