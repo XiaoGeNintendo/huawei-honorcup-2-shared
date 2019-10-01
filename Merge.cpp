@@ -27,8 +27,8 @@
 typedef unsigned long long ull;
 const int inf=1039074182;
 const double at=0.99992;
-const double discrete=3;
-const int attempt=5000;
+const double discrete=2.8;
+const int attempt=4000;
 using namespace std;
 const int dx[]={0,-1,0,1};
 const int dy[]={-1,0,1,0};
@@ -40,60 +40,6 @@ bool fix[64];
 double best;
 double cur;
 srand();
-
-class Rubbish
-{
-//	for(int i=0;i<64;i++)
-//	{
-//		memset(adj[i].nei,-1,sizeof(adj[i].nei));
-//	}
-	pair<int,double> predict(vector <vector<double> > &a,vector <vector<double> >&b,double k)
-	{
-		for(int i=0;i<4;i++)
-		{
-			if(EstimateAdj(a,b,i,k)!=0) return mp(i,EstimateAdj(a,b,i,k));
-		}
-		return mp(-1,-1.0);
-	}
-//	for(int i=0;i<64;i++)
-//	{
-//		vec.clear();
-//		for(int j=0;j<64;j++)
-//		{
-//			if(i==j) continue;
-//			pair<int,double> t=predict(frag[i],frag[j],4);
-//			vec.push_back(mp(mp(t.second,t.first),j));
-//		}
-//		sort(all(vec));
-//		reverse(all(vec));
-//		vec.erase(unique(all(vec)),vec.end());
-//		if(vec.size()<4)
-//		{
-//			cout<<"FUCK\n";
-//			cout<<i<<endl;
-//			return 0;
-//		}
-//		for(int j=0;j<4;j++)
-//		{
-//			for(int k=0;k<vec.size();k++)
-//			{
-//				if(vec[k].first.second==j)
-//				{
-//					adj[i].nei[j]=vec[k].second;
-//					break;
-//				}
-//			}
-//		}
-//	}
-//	for(int i=0;i<64;i++)
-//	{
-//		for(int j=0;j<4;j++)
-//		{
-//			cout<<adj[i].nei[j]<<' ';
-//		}
-//		cout<<endl;
-//	}
-};
 
 bool out(int x,int y)
 {
@@ -169,19 +115,40 @@ inline double calcswap(int x,int y)
 	return calcAhasB(x,now[y])+calcAhasB(y,now[x])-calcAhasB(x,now[x])-calcAhasB(y,now[y])+(isadj(x,y)?badadj(x,y,2)+badadj(x,y,0):0);
 }
 
+inline double calcswapcol(int x)
+{
+	if(x==n) return 0;
+	double res=0;
+	double a1=0,a2=0;
+	for(int i=0;i<8;i++)
+	{
+		res-=adj[now[i*8+x-1]][now[i*8+x]][2];
+		a1-=adj[now[i*8+x-1]][now[i*8+x]][2];
+		res+=adj[now[i*8]][now[i*8+7]][0];
+		a2+=adj[now[i*8]][now[i*8+7]][0];
+	}
+	cout<<a1<<' '<<a2<<endl;
+	return res;
+}
+
+inline double calcswaprow(int x)
+{
+	if(x==n) return 0;
+	double res=0;
+	for(int j=0;j<8;j++)
+	{
+		res-=adj[now[(x-1)*8+j]][now[x*8+j]][3];
+		res+=adj[now[j]][now[7*8+j]][1];
+	}
+	return res;
+}
+
 void dfs(double Time)
 {
-//	if(cur!=calc(now))
-//	{
-//		cout<<cur<<' '<<calc(now)<<endl;
-//		exit(0);
-//	}
-	assert(cur==calc(now));
-//	cout<<Time<<endl;
+//	assert(cur==calc(now));
 	if(cur>best)
 	{
-		best=calc(now);
-//		best=cur;
+		best=cur;
 		for(int i=0;i<64;i++)
 		{
 			choose[i]=now[i];
@@ -196,16 +163,16 @@ void dfs(double Time)
 		{
 			x=rand(0,63);
 			y=rand(0,63);
-		}while(fix[x] || fix[y] || x==y/* || isadj(x,y)*/);
+		}while(fix[x] || fix[y] || x==y);
 		times++;
 		delta=calcswap(x,y);
 		if(times>=attempt) break;
-//		if(delta>0) break;
 		if(delta>0 || (delta!=0 && exp(discrete*delta/Time)>1.0*rand(0,1000000)/1000000)) break;
 	}while(true);
-//	cout<<x<<' '<<y<<endl;
 	if(times<attempt)
 	{
+//		assert(x!=28);
+//		assert(y!=28);
 		swap(now[x],now[y]);
 		cur+=delta;
 		dfs(Time*at);
@@ -216,33 +183,14 @@ void dfs(double Time)
 
 void solve()
 {
-	memset(fix,0,sizeof(fix));
-	for(int i=0;i<64;i++)
-	{
-		now[i]=i;
-	}
-	random(now,0,64);
-	for(int i=0;i<64;i++)
-	{
-		if(now[i]==32)
-		{
-			swap(now[0],now[i]);
-			break;
-		}
-	}
-//	fix[0]=true;
-//	best=calc(now);
 	cur=calc(now);
 	best=max(best,cur);
 	dfs(1);
-	assert(calc(now)==cur);
-//	cout<<best<<endl;
 }
 
 int main()
 {
 	freopen("1200.txt","r",stdin);
-//	freopen("½×¶ÎÐÔ³É¹û.txt","w",stdout);
 	ios_base::sync_with_stdio(false);
 	for(int i=0;i<64;i++)
 	{
@@ -288,18 +236,17 @@ int main()
 			swap(now[i],now[j]);
 		}
 	}
-//	cout<<calc(now)<<endl;
-//	cout<<calcswap(48,47)<<endl;
-//	cout<<calc(now)+calcswap(48,47)<<endl;
-//	swap(now[48],now[47]);
-//	cout<<calc(now)<<endl;
-//	return 0;
 	freopen("shit.txt","w",stdout);
 	cout<<"1200.png\n";
+	for(int i=0;i<64;i++)
+	{
+		now[i]=i;
+	}
+	random(now,0,64);
 	for(int i=0;i<100;i++)
 	{
 		solve();
-	}
+	} 	
 	for(int i=0;i<8;i++)
 	{
 		for(int j=0;j<8;j++)
@@ -307,8 +254,11 @@ int main()
 			cout<<choose[i*8+j]<<' ';
 		}
 		cout<<' ';
-//		cout<<endl;
 	}
-//	cout<<calc(choose)<<endl;
+	for(int i=0;i<64;i++)
+	{
+		now[i]=choose[i];
+	}
+	cout<<calc(choose)<<endl;
 	return 0;
 }
