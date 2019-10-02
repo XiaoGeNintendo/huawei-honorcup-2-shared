@@ -15,6 +15,7 @@ template<class T>void byebye(T t){cout<<t<<endl;exit(0);}
 
 string ans;
 double tttm;
+bool LINUX;
 
 int sti(string s){
 	int ret=0,i=0,flag=1;
@@ -38,7 +39,9 @@ int main(int argc,char* argv[]){
 	int starting_image=sti(argv[2]);
 	int ending_image=sti(argv[3]);
 	int frag_size=sti(argv[4]);
-	
+	if(argc>5){
+		if(argv[5]=="true")LINUX=true;
+	}
 	char command[205];
 	sprintf(command,"python transfer.py %s %d %d %d",image_folder.c_str(),starting_image,ending_image,frag_size);
 	
@@ -49,10 +52,12 @@ int main(int argc,char* argv[]){
 	for(int i=starting_image;i<=ending_image;++i){
 		char s[25];
 		sprintf(s,".\\output\\output%d.txt",i);
-		sprintf(command,"initializer.exe \"%s\"",s);
+		if(!LINUX)sprintf(command,"initializer.exe \"%s\"",s);
+		else sprintf(command,"initializer \"%s\"",s);
 		system(command);
 		puts("[INFO]Grey Value transferred!");
-		sprintf(command,"step2.exe %d.png",i);
+		if(!LINUX)sprintf(command,"step2.exe %d.png",i);
+		else sprintf(command,"step2 %d.png",i);
 		system(command);
 		printf("[INFO]Image %d Finished\n",i);
 		freopen("answer.out","r",stdin);
