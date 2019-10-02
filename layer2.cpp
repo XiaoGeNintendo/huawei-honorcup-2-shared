@@ -306,7 +306,7 @@ void dfs(double Time)
 	}
 }
 
-void solve()
+void solve(int T)
 {
 //	memset(fix,0,sizeof(fix));
 	random(now,0,64);
@@ -314,8 +314,8 @@ void solve()
 	random(now,0,64);
 	random(now,0,64);
 	random(now,0,64);
-//	best=cur=calc(now);
-	best=max(best,cur);
+	if(T%32==0) best=cur=calc(now);
+//	best=max(best,cur);
 	dfs(1);
 	for(int x=0;x<8;x++)
 	{
@@ -330,44 +330,6 @@ void solve()
 			}
 		}
 	}
-}
-
-void Solve()
-{
-//	random(now,0,64);
-	double Time=2000;
-	double delta;
-	cur=calc(now);
-	int x,y;
-	while(Time>=1e-14)
-	{
-		do
-		{
-			x=rand(0,63);
-			y=rand(0,63);
-		}while(fix[x] || fix[y] || x==y);
-		delta=calcswap(x,y);
-		if(delta>0)
-		{
-			swap(now[x],now[y]);
-			cur+=delta;
-		}
-		else if(exp(delta/Time)>1.0*rand(0,1000000)/1000000)
-		{
-			swap(now[x],now[y]);
-			cur+=delta;
-		}
-		if(cur>best)
-		{
-			best=cur;
-			for(int i=0;i<63;i++)
-			{
-				choose[i]=now[i];
-			}
-		}
-		Time*=at;
-	}
-	cout<<best<<endl;
 }
 
 int main(int argc,char *argv[])
@@ -410,7 +372,7 @@ int main(int argc,char *argv[])
 	random(now,0,64);
 	for(int i=0;i<64;i++)
 	{
-		solve();
+		solve(i);
 	}
 //	freopen("shit.txt","w",stdout);
 //	cout<<"1200.png\n";

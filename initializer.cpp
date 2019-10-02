@@ -167,60 +167,6 @@ void test()
 	}
 }
 
-class Rubbish
-{
-//	for(int i=0;i<64;i++)
-//	{
-//		memset(adj[i].nei,-1,sizeof(adj[i].nei));
-//	}
-	pair<int,double> predict(vector <vector<double> > &a,vector <vector<double> >&b,double k)
-	{
-		for(int i=0;i<4;i++)
-		{
-			if(EstimateAdj(a,b,i,k)!=0) return mp(i,EstimateAdj(a,b,i,k));
-		}
-		return mp(-1,-1.0);
-	}
-//	for(int i=0;i<64;i++)
-//	{
-//		vec.clear();
-//		for(int j=0;j<64;j++)
-//		{
-//			if(i==j) continue;
-//			pair<int,double> t=predict(frag[i],frag[j],4);
-//			vec.push_back(mp(mp(t.second,t.first),j));
-//		}
-//		sort(all(vec));
-//		reverse(all(vec));
-//		vec.erase(unique(all(vec)),vec.end());
-//		if(vec.size()<4)
-//		{
-//			cout<<"FUCK\n";
-//			cout<<i<<endl;
-//			return 0;
-//		}
-//		for(int j=0;j<4;j++)
-//		{
-//			for(int k=0;k<vec.size();k++)
-//			{
-//				if(vec[k].first.second==j)
-//				{
-//					adj[i].nei[j]=vec[k].second;
-//					break;
-//				}
-//			}
-//		}
-//	}
-//	for(int i=0;i<64;i++)
-//	{
-//		for(int j=0;j<4;j++)
-//		{
-//			cout<<adj[i].nei[j]<<' ';
-//		}
-//		cout<<endl;
-//	}
-};
-
 bool out(int x,int y)
 {
 	return (x<0 || y<0 || x>=8 || y>=8);
@@ -359,7 +305,7 @@ void dfs(double Time)
 	}
 }
 
-void solve()
+void solve(int T)
 {
 //	memset(fix,0,sizeof(fix));
 	random(now,0,64);
@@ -367,8 +313,7 @@ void solve()
 	random(now,0,64);
 	random(now,0,64);
 	random(now,0,64);
-	best=cur=calc(now);
-//	best=max(best,cur);
+	if(T%8==0) best=cur=calc(now);
 	dfs(1);
 	for(int x=0;x<8;x++)
 	{
@@ -492,9 +437,9 @@ int main(int argc,char *argv[])
 		now[i]=i;
 	}
 	random(now,0,64);
-	for(int i=0;i<64;i++)
+	for(int i=0;i<128;i++)
 	{
-		solve();
+		solve(i);
 //		Solve();
 	}
 	freopen("value0.out","w",stdout);
@@ -504,32 +449,13 @@ int main(int argc,char *argv[])
 		{
 			for(int d=0;d<4;d++)
 			{
-				double t=((double)newadj[i][j][d]-32)/64*15;
+				double t=((double)newadj[i][j][d]-64)/128*15;
 				cout<<sigmoid(t)<<' ';
 			}
 			cout<<endl;
 		}
 		cout<<endl;
 	}
-//	for(int i=0;i<32;i++)
-//	{
-//		for(int d=0;d<4;d++)
-//		{
-//			cout<<newadj[]
-////			cout<<newadj[0][i][d]<<' '<<adj[0][i][d]<<endl;
-//		}
-//		cout<<endl;
-//	}
-//	freopen("shit.txt","w",stdout);
-//	cout<<"1200.png\n";
-//	for(int i=0;i<8;i++)
-//	{
-//		for(int j=0;j<8;j++)
-//		{
-//			cout<<choose[i*8+j]<<' ';
-//		}
-//		cout<<' ';
-//	}
 	for(int i=0;i<64;i++)
 	{
 		now[i]=choose[i];

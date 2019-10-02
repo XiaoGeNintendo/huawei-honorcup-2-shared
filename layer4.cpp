@@ -314,7 +314,7 @@ void solve(int T)
 	random(now,0,64);
 	random(now,0,64);
 	random(now,0,64);
-	if(T%32==0) best=cur=calc(now);
+	if(T%64==0) best=cur=calc(now);
 //	best=max(best,cur);
 	dfs(1);
 	for(int x=0;x<8;x++)
@@ -335,7 +335,7 @@ void solve(int T)
 int main(int argc,char *argv[])
 {
 	assert(argc==1);
-	freopen("value2.out","r",stdin);
+	freopen("value3.out","r",stdin);
 	ios_base::sync_with_stdio(false);
 	for(int i=0;i<64;i++)
 	{
@@ -381,7 +381,7 @@ int main(int argc,char *argv[])
 //		cout<<choose[i]<<' ';
 //	}
 //	cout<<endl;
-	freopen("value3.out","w",stdout);
+	freopen("value4.out","w",stdout);
 	for(int i=0;i<64;i++)
 	{
 		for(int j=0;j<64;j++)
