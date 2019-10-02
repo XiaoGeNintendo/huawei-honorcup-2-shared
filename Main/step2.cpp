@@ -7,15 +7,11 @@
 #include <vector>
 #include <map>
 #include <assert.h>
-#include <windows.h>
 #include <queue>
 #include <set>
 #include <string>
 #include <string.h>
 #include <stack>
-#include <chrono>
-#include <time.h>
-//#include <E:\C++\dev c++\ShiMaoC++\contest\HuaweiHonorCup\JudgeAdjacent.h>
 #define Endl endl
 #define mp make_pair
 #define ll long long
@@ -24,8 +20,6 @@
 #define over(A) {cout<<A<<endl;exit(0);}
 #define all(A) A.begin(),A.end()
 #define ceil(a,b) ((a-1)/b+1)
-#define srand() mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
-#define rand(l,r) uniform_int_distribution<int>(l,r)(rng)
 typedef unsigned long long ull;
 const int inf=1039074182;
 const double at=0.99992;
@@ -41,7 +35,6 @@ int choose[64];
 bool fix[64];
 double best;
 double cur;
-srand();
 int newadj[64][64][4];
 
 /*
@@ -68,6 +61,9 @@ dir:
 and so on..
 */
 using namespace std;
+int rand(int l,int r) {
+	return (1LL*rand()*rand())%(r-l+1)+l;
+}
 double EstimateValue(int x);
 double EstimateAdj(vector <vector<double> >&a,vector <vector<double> >&b,int dire,double k);
 double EstimateVector(vector <double> &a,vector <double> &b,double k);
@@ -301,6 +297,7 @@ int main(int argc,char *argv[]) {
 	for(int i=0; i<64; i++) {
 		now[i]=i;
 	}
+//	cout<<"DONE\n";
 	for(int i=0; i<64; i++) {
 		for(int j=0; j<64; j++) {
 			if(i==j) continue;
@@ -316,6 +313,7 @@ int main(int argc,char *argv[]) {
 	random(now,0,64);
 	for(int i=0; i<64; i++) {
 		solve(i);
+//	cout<<i<<' '<<best<<endl;
 	}
 //	freopen("shit.txt","w",stdout);
 //	cout<<"1200.png\n";
@@ -330,5 +328,6 @@ int main(int argc,char *argv[]) {
 	for(int i=0; i<64; i++) {
 		cout<<choose[i]<<' ';
 	}
+//	cout<<calc(choose)<<endl;
 	return 0;
 }
