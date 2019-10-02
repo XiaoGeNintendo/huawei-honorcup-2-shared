@@ -215,7 +215,7 @@ inline double calcswapcol(int x) {
 		res+=adj[now[i*8]][now[i*8+7]][0];
 		a2+=adj[now[i*8]][now[i*8+7]][0];
 	}
-//	cout<<a1<<' '<<a2<<endl;
+	cout<<a1<<' '<<a2<<endl;
 	return res;
 }
 
