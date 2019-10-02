@@ -13,6 +13,9 @@ template<class T1,class T2>ostream& operator<<(ostream& out,pair<T1,T2> _p){out<
 template<class T>ostream& operator<<(ostream& out,vector<T> _v){for(int i=0;i<_v.size();++i)out<<_v[i]<<(i+1==_v.size()?"":" ");return out;}
 template<class T>void byebye(T t){cout<<t<<endl;exit(0);}
 
+string ans;
+double tttm;
+
 int sti(string s){
 	int ret=0,i=0,flag=1;
 	while(!isdigit(s[i])){
@@ -24,10 +27,12 @@ int sti(string s){
 }
 
 int main(int argc,char* argv[]){
-	printf("%d\n",argc);
+	tttm=clock();
+	printf("[INFO]%d parameters in total\n",argc);
 	for(int i=0;i<argc;++i){
 		printf("%s\n",argv[i]);
 	}
+	puts("");
 	string image_folder=argv[1];
 	if(image_folder[(int)image_folder.size()-1]=='\\')image_folder=image_folder.substr(0,(int)image_folder.size()-1);
 	int starting_image=sti(argv[2]);
@@ -39,19 +44,31 @@ int main(int argc,char* argv[]){
 	
 	system(command);
 	
-	printf("Image transferred!\n");
+	printf("[INFO]Image transferred!\n");
 	
 	for(int i=starting_image;i<=ending_image;++i){
 		char s[25];
 		sprintf(s,".\\output\\output%d.txt",i);
 		sprintf(command,"initializer.exe \"%s\"",s);
 		system(command);
-		puts("Grey Value transferred!");
-		sprintf(command,"checkadj.exe value0.in %d.png",i);
+		puts("[INFO]Grey Value transferred!");
+		sprintf(command,"step2.exe %d.png",i);
 		system(command);
-		printf("Image %d\n Finished\n",i);
+		printf("[INFO]Image %d Finished\n",i);
+		freopen("answer.out","r",stdin);
+		string S;
+		while(getline(cin,S)){
+			ans+=S+'\n';
+		}
+		ans+='\n';
+		fclose(stdin);
 	}
-	
+	char new_file_name[30]={};
+	sprintf(new_file_name,"answer_%d.txt",frag_size);
+	freopen(new_file_name,"w",stdout);
+	puts(ans.c_str());
+	fclose(stdout);
+	printf("[INFO]time used=%.5fseconds\n",(clock()-tttm)/CLOCKS_PER_SEC);
 	return 0;
 }
 
