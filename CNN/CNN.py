@@ -1,4 +1,3 @@
-from __future__ import print_function
 import keras
 import dataGen
 from keras.datasets import cifar10

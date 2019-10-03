@@ -15,7 +15,7 @@ def getImage(k,src=False):
     return img
 
 def toXY(ID):
-    return (ID%(512//size),ID/(512//size))
+    return (ID%(512//size),ID//(512//size))
 
 def toID(x,y):
     return y*(512//size)+x
