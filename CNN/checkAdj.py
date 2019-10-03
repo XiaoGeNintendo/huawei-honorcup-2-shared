@@ -43,4 +43,4 @@ def getMatrix(img_dir,save_dir,sz):
 
 if __name__=='__main__':
     init()
-    getMatrix('D:/MyPython/data/data_train/64-sources/1200.png','D:/MyPython/huawei-honorcup-2-shared/CNN/matrix/1200.txt',64)
+    getMatrix('D:/MyPython/data/data_train/64-sources/1202.png','D:/MyPython/huawei-honorcup-2-shared/CNN/matrix/1202.txt',64)
