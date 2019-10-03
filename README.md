@@ -13,4 +13,8 @@ usage: `java -jar checker.jar <Image Path> <Answer Path> <Size>`
 
 example: `java -jar checker.jar 1000.png out.txt 64`
 
+**AccuracyChecker.exe**
 
+usage: `AccuracyChecker.exe <Adjacent-Value Matrix Path>`
+
+example: `AccuracyChecker.exe input.AdjValue`
