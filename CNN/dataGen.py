@@ -64,6 +64,7 @@ def getTrainData(cnt):
             ans.append(int(f.readline()[:-1]))
     for i in range(cnt):
         y_train[i]=ans[i]
+        print('Reading: %d'%i)
         with open(os.path.join(data_dir,str(i)+'.txt')) as f:
             for j in range(width):
                 tmp=f.readline().split(' ')

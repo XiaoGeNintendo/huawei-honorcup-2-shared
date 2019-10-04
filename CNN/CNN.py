@@ -7,18 +7,20 @@ from keras.layers import Dense, Dropout, Activation, Flatten
 from keras.layers import Conv2D, MaxPooling2D
 import os
 
-sample = 10000
+sample = 30000
 batch_size = 32
 #num_classes = 1
-epochs = 50
+epochs = 30
 data_augmentation = True
 num_predictions = 20
 save_dir = os.path.join(os.getcwd(), 'saved_models')
 model_name = 'trained_model.h5'
 
 # The data, split between train and test sets:
-(x_train, y_train) = dataGen.getTrainData(sample//5)
-(x_test, y_test) = dataGen.getTrainData(sample//2)
+(x_test, y_test) = dataGen.getTrainData(10000)
+#(x_train, y_train) = dataGen.getTrainData(2000)
+x_train=x_test[:5000]
+y_train=y_test[:5000]
 print('x_train shape:', x_train.shape)
 print(x_train.shape[0], 'train samples')
 print(x_test.shape[0], 'test samples')
@@ -28,7 +30,7 @@ print(x_test.shape[0], 'test samples')
 #y_test = keras.utils.to_categorical(y_test, num_classes)
 
 model = Sequential()
-model.add(Conv2D(32, (5, 5), padding='same',
+model.add(Conv2D(16, (7, 7), padding='same',
                  input_shape=x_train.shape[1:]))
 model.add(Activation('relu'))
 model.add(Conv2D(32, (5, 5)))
@@ -36,20 +38,20 @@ model.add(Activation('relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Dropout(0.25))
 
-model.add(Conv2D(64, (5, 5), padding='same'))
+model.add(Conv2D(32, (5, 5), padding='same'))
 model.add(Activation('relu'))
-model.add(Conv2D(64, (5, 5)))
+model.add(Conv2D(32, (5, 5)))
 model.add(Activation('relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Dropout(0.25))
 
 model.add(Flatten())
-model.add(Dense(1024))
+model.add(Dense(2048))
 model.add(Activation('relu'))
-model.add(Dense(256))
+model.add(Dense(512))
 model.add(Activation('relu'))
 model.add(Dropout(0.5))
-model.add(Dense(64))
+model.add(Dense(128))
 model.add(Activation('relu'))
 model.add(Dense(1))
 model.add(Activation('sigmoid'))

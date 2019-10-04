@@ -78,7 +78,7 @@ def saveAsText(img,save_dir):
 def main():
     ans=[]
     save_dir='D:/MyPython/huawei-honorcup-2-shared/CNN/data/'
-    for i in range(10000):
+    for i in range(30000):
         ad=random.randint(0,1)
         k=random.randint(1200,1799)
         if ad:
@@ -112,5 +112,5 @@ if __name__=='__main__':
             source=False
         print(data_dir,size,num,source)
     else:
-        #main()
-        saveAsText(getImage(1208,True),'D:/MyPython/huawei-honorcup-2-shared/1208.txt')
+        main()
+        #saveAsText(getImage(1208,True),'D:/MyPython/huawei-honorcup-2-shared/1208.txt')
