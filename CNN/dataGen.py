@@ -35,22 +35,24 @@ def imgToData(img):
 #
 #3  1
 #   2
-def getEdge(img,x1,y1,x2,y2,con):
+def getEdge(img,x1,y1,x2,y2,con,sz=None):
+    if sz==None:
+        sz=size
     if con>1:
         x1,x2=x2,x1
         y1,y2=y2,y1
         con-=2
     if con==0:
-        ret=Image.new('RGB',(size*2,size))
-        ret.paste(getBlockFromImg(img,x1,y1),(size,0))
+        ret=Image.new('RGB',(sz*2,sz))
+        ret.paste(getBlockFromImg(img,x1,y1),(sz,0))
         ret.paste(getBlockFromImg(img,x2,y2),(0,0))
         ret=ret.rotate(90,expand=True)
-        return ret.crop((0,size-width//2,size,size+width//2))
+        return ret.crop((0,sz-width//2,sz,sz+width//2))
     elif con==1:
-        ret=Image.new('RGB',(size,size*2))
-        ret.paste(getBlockFromImg(img,x1,y1),(0,size))
+        ret=Image.new('RGB',(sz,sz*2))
+        ret.paste(getBlockFromImg(img,x1,y1),(0,sz))
         ret.paste(getBlockFromImg(img,x2,y2),(0,0))
-        return ret.crop((0,size-width//2,size,size+width//2))
+        return ret.crop((0,sz-width//2,sz,sz+width//2))
         
 
 def getTrainData(cnt):
