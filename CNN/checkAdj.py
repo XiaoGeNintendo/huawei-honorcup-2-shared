@@ -64,7 +64,9 @@ def getMatrix(img_dir,save_dir,sz):
 
 
 def main():
-    getMatrix('D:/MyPython/data/data_train/64-sources/1204.png','D:/MyPython/huawei-honorcup-2-shared/CNN/matrix/1204.txt',64)
+    #getMatrix('D:/MyPython/data/data_train/64-sources/1204.png','D:/MyPython/huawei-honorcup-2-shared/CNN/matrix/1204.txt',64)
+    for i in range(1205,1798):
+        getMatrix('D:/MyPython/data/data_train/64-sources/%d.png'%i,'D:/MyPython/huawei-honorcup-2-shared/CNN/matrix/%d.txt'%i,64)
 
 
 if __name__=='__main__':
