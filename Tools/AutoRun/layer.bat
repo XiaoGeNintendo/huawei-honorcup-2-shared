@@ -1,5 +1,5 @@
 call stress.bat layer%1.exe
-checkadj.exe value%1.out 1200.png 
+checkadj.exe value%1.out %2.png 
 if %ERRORLEVEL% EQU 0 goto shit
 echo [LAYER TEST]Successfully ran Layer %1
 goto eof

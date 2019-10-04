@@ -1,2 +1,4 @@
-Just run autorun.bat
-Best in CMD
+run autorun.bat <Pic Id>
+Supported Layer 9!!! Hooray!!!
+
+Best with CMD.
