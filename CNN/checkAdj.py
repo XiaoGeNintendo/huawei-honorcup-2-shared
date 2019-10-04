@@ -4,11 +4,14 @@ import dataGen
 import numpy as np
 import sys
 import os
+import random
 from PIL import Image
 
 model_dir='D:/MyPython/huawei-honorcup-2-shared/CNN/saved_models/model_2.h5'
 model=None
-verb=False
+verb=True
+batch_size=32
+buffer_size=1024
 
 def init():
     global model
@@ -29,7 +32,21 @@ def check(img_dir,id1,id2,con,sz):
     tmp=dataGen.imgToData(tmp)
     p=model.predict(tmp,verbose=verb)
     return p[0]
-    
+
+def runBatch(batch,ops,ret):
+    global model
+    if model==None:
+        init()
+
+    batch=np.asarray(batch)
+    p=model.predict(batch,batch_size=batch_size,verbose=verb)
+    for op in range(len(ops)):
+        i=ops[op][0]
+        j=ops[op][1]
+        k=ops[op][2]
+        if p[op]>0.5:
+            print(p[op],picHelper.toXY(i),picHelper.toXY(j),k)
+        ret[i][j][k]=p[op]
 
 
 def getMatrix(img_dir,save_dir,sz):
@@ -39,19 +56,24 @@ def getMatrix(img_dir,save_dir,sz):
     
     ret=np.empty(((512//sz)**2,(512//sz)**2,4))
     img=Image.open(img_dir)
+    ops=[]
+    batch=[]
     for i in range((512//sz)**2):
         for j in range((512//sz)**2):
             for k in range(4):
                 if i==j:
                     ret[i][j][k]=0
                 else:
+                    ops.append((i,j,k))
                     tmp=dataGen.getEdge(img,picHelper.toXY(i)[0],picHelper.toXY(i)[1],picHelper.toXY(j)[0],picHelper.toXY(j)[1],k,sz)
                     tmp=dataGen.imgToData(tmp)
-                    p=model.predict(tmp,verbose=verb)
-                    #print(p)
-                    if p[0]>0.5:
-                        print(p[0],picHelper.toXY(i),picHelper.toXY(j),k)
-                    ret[i][j][k]=p[0]
+                    tmp=tmp[0]
+                    batch.append(tmp)
+                    if len(batch)>=buffer_size:
+                        runBatch(batch,ops,ret)
+                        batch=[]
+                        ops=[]
+    
     
     with open(save_dir,'w') as f:
         for i in range((512//sz)**2):
@@ -65,7 +87,7 @@ def getMatrix(img_dir,save_dir,sz):
 
 def main():
     #getMatrix('D:/MyPython/data/data_train/64-sources/1204.png','D:/MyPython/huawei-honorcup-2-shared/CNN/matrix/1204.txt',64)
-    for i in range(1200,1220):
+    for i in range(1220,1799):
         getMatrix('D:/MyPython/data/data_train/64/%d.png'%i,'D:/MyPython/huawei-honorcup-2-shared/CNN/matrix/64/%d.txt'%i,64)
 
 

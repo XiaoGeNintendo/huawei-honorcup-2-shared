@@ -112,4 +112,5 @@ if __name__=='__main__':
             source=False
         print(data_dir,size,num,source)
     else:
-        main()
+        #main()
+        saveAsText(getImage(1208,True),'D:/MyPython/huawei-honorcup-2-shared/1208.txt')
