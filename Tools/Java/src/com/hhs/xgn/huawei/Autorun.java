@@ -91,9 +91,14 @@ public class Autorun extends Module {
 		
 		try{
 			dir=args[0];
+			if(dir.endsWith("/") || dir.endsWith("\\")){
+				dir=dir.substring(0,dir.length()-1);
+			}
+			
 			st=Integer.parseInt(args[1]);
 			ed=Integer.parseInt(args[2]);
 			
+			System.out.println("Read arg="+dir+" "+st+" "+ed);
 			for(int i=st;i<=ed;i++){
 				runFor(i);
 			}
