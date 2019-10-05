@@ -30,15 +30,15 @@ public class Checker extends Module{
 			sz=Integer.parseInt(args[2]);
 			
 			if(sz!=16 && sz!=32 && sz!=64){
-				System.out.println("WARNING: SIZE SHOULD BE 16 OR 32 OR 64");
+				Logger.warning("SIZE SHOULD BE 16 OR 32 OR 64");
 			}
 			
 			BufferedImage bi=ImageIO.read(new File(pic));
 			
-			System.out.println("Read picture ok:"+bi.getWidth()+"*"+bi.getHeight());
+			Logger.info("Read picture ok:"+bi.getWidth()+"*"+bi.getHeight());
 			
 			if(bi.getWidth()!=512 || bi.getHeight()!=512){
-				System.out.println("WARNING: IMAGE SIZE INCORRECT");
+				Logger.warning("Image Size Incorrect");
 			}
 			
 			BufferedImage[][] sub=new BufferedImage[1025][1025];
@@ -50,7 +50,7 @@ public class Checker extends Module{
 				}
 			}
 			
-			System.out.println("Sub picture captured!");
+			Logger.info("Sub picture captured!");
 			
 			Scanner s=new Scanner(new FileInputStream(new File(ans)));
 			
@@ -69,13 +69,15 @@ public class Checker extends Module{
 				}
 			}
 			
-			System.out.println("Read answer successful:"+anses);
+			s.close();
+			
+			Logger.info("Read answer successful:"+anses);
 			
 			BufferedImage bo=new BufferedImage(bi.getWidth(), bi.getHeight(),BufferedImage.TYPE_INT_ARGB);
 			
 			int x=0;
 			
-			System.out.println("Generating");
+			Logger.info("Generating");
 			for(int i=0;i<bi.getWidth();i+=sz){
 				for(int j=0;j<bi.getHeight();j+=sz){
 					for(int k=0;k<sz;k++){
@@ -97,7 +99,7 @@ public class Checker extends Module{
 				
 			}
 			
-			System.out.println("Rotating");
+			Logger.info("Rotating");
 			BufferedImage rot=new BufferedImage(bi.getWidth(), bi.getHeight(),BufferedImage.TYPE_INT_ARGB);
 			for(int i=0;i<bi.getWidth();i++){
 				for(int j=0;j<bi.getHeight();j++){
@@ -112,12 +114,13 @@ public class Checker extends Module{
 //			}
 			
 			
-			System.out.println("Writing files");
+			Logger.info("Writing files");
 			ImageIO.write(rot,"png",new File("ans.png"));
 			
-			System.out.println("End formatting! See ans.png for detail");
+			Logger.info("End formatting! See ans.png for detail");
 			
-			System.out.println("Starting viewing window");
+			Logger.info("Starting viewing window");
+			
 			JFrame vw=new JFrame("Viewing Window");
 			vw.setLayout(new BorderLayout());
 			
@@ -131,8 +134,8 @@ public class Checker extends Module{
 			vw.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			
 		}catch(Exception e){
-			System.out.println("Unexpected Exception:"+e);
-			e.printStackTrace();
+			Logger.error(e);
+			System.exit(2);
 		}
 	}
 }
