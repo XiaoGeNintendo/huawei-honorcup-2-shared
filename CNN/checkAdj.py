@@ -7,7 +7,7 @@ import os
 import random
 from PIL import Image
 
-model_dir='D:/MyPython/huawei-honorcup-2-shared/CNN/saved_models/model_2.h5'
+model_dir='D:/MyPython/huawei-honorcup-2-shared/CNN/saved_models/model_4.h5'
 model=None
 verb=True
 batch_size=32
@@ -74,6 +74,10 @@ def getMatrix(img_dir,save_dir,sz):
                         batch=[]
                         ops=[]
     
+    if len(batch)>=buffer_size:
+        runBatch(batch,ops,ret)
+        batch=[]
+        ops=[]
     
     with open(save_dir,'w') as f:
         for i in range((512//sz)**2):
@@ -86,9 +90,9 @@ def getMatrix(img_dir,save_dir,sz):
 
 
 def main():
-    getMatrix('D:/MyPython/data/data_train/64/1220.png','D:/MyPython/huawei-honorcup-2-shared/CNN/matrix/64/1220.txt',64)
-    #for i in range(1220,1799):
-    #    getMatrix('D:/MyPython/data/data_train/64/%d.png'%i,'D:/MyPython/huawei-honorcup-2-shared/CNN/matrix/64/%d.txt'%i,64)
+    #getMatrix('D:/MyPython/data/data_train/64/1234.png','D:/MyPython/huawei-honorcup-2-shared/CNN/matrix/1234.txt',64)
+    for i in range(2400,2410):
+        getMatrix('D:/MyPython/data/data_test1_blank/64/%d.png'%i,'D:/MyPython/huawei-honorcup-2-shared/CNN/matrix1/64/%d.txt'%i,64)
 
 
 if __name__=='__main__':
