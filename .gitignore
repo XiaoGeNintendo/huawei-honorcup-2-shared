@@ -1,4 +1,4 @@
-*.exe
 /CNN/data
+/Main/*.exe
 *.pyc
 *.zip
