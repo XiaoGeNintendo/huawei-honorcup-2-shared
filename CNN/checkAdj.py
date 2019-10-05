@@ -74,10 +74,9 @@ def getMatrix(img_dir,save_dir,sz):
                         batch=[]
                         ops=[]
     
-    if len(batch)>=buffer_size:
-        runBatch(batch,ops,ret)
-        batch=[]
-        ops=[]
+    runBatch(batch,ops,ret)
+    batch=[]
+    ops=[]
     
     with open(save_dir,'w') as f:
         for i in range((512//sz)**2):
