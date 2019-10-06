@@ -13,6 +13,7 @@ model=None
 verb=True
 batch_size=32
 buffer_size=1024
+p=0.5
 
 def init():
     global model
@@ -63,16 +64,20 @@ def analyzeAVM(avm_dir,sz):
                     #print(i,j,k)
                     x=tmp[k]
                     if isAdjID(i,j,k):
-                        con.append((i,j,k,x))
+                        if x<0.8:
+                            con.append((i,j,k,x))
                     else:
-                        uncon.append((i,j,k,x))
+                        if x>0.1:
+                            uncon.append((i,j,k,x))
             f.readline()
+    plt.subplot(211)
     plt.hist(list(map(lambda x:x[3],con)),100)
+    plt.subplot(212)
     plt.hist(list(map(lambda x:x[3],uncon)),100)
     plt.show()
 
 def main():
-    analyzeAVM('D:/MyPython/huawei-honorcup-2-shared/CNN/matrix/64-sources/1200.txt',64)
+    analyzeAVM('D:/MyPython/huawei-honorcup-2-shared/CNN/matrix/64/1200.txt',64)
 
 if __name__=='__main__':
     main()
