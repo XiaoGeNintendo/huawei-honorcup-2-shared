@@ -19,7 +19,7 @@ def init():
     opt = keras.optimizers.RMSprop(learning_rate=0.0001, decay=1e-6)
     
     model.compile(loss='mean_squared_error',optimizer=opt,metrics=['accuracy'])
-    model.summary()
+    #model.summary()
 
 
 def check(img_dir,id1,id2,con,sz):
