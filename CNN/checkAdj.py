@@ -28,12 +28,12 @@ def check(img_dir,id1,id2,con,sz):
         init()
         
     img=Image.open(img_dir)
-    tmp=dataGen.getEdge(img,picHelper.toXY(id1)[0],picHelper.toXY(id1)[1],picHelper.toXY(id2)[0],picHelper.toXY(id2)[1],con,sz)
+    tmp=dataGen.getEdge(img,picHelper.toXY(id1,sz)[0],picHelper.toXY(id1,sz)[1],picHelper.toXY(id2,sz)[0],picHelper.toXY(id2,sz)[1],con,sz)
     tmp=dataGen.imgToData(tmp)
     p=model.predict(tmp,verbose=verb)
     return p[0]
 
-def runBatch(batch,ops,ret):
+def runBatch(batch,ops,ret,sz):
     global model
     if model==None:
         init()
@@ -45,7 +45,7 @@ def runBatch(batch,ops,ret):
         j=ops[op][1]
         k=ops[op][2]
         if p[op]>0.5:
-            print(p[op],picHelper.toXY(i),picHelper.toXY(j),k)
+            print(p[op],picHelper.toXY(i,sz),picHelper.toXY(j,sz),k)
         ret[i][j][k]=p[op]
 
 
@@ -65,16 +65,16 @@ def getAVM(img_dir,save_dir,sz):
                     ret[i][j][k]=0
                 else:
                     ops.append((i,j,k))
-                    tmp=dataGen.getEdge(img,picHelper.toXY(i)[0],picHelper.toXY(i)[1],picHelper.toXY(j)[0],picHelper.toXY(j)[1],k,sz)
+                    tmp=dataGen.getEdge(img,picHelper.toXY(i,sz)[0],picHelper.toXY(i,sz)[1],picHelper.toXY(j,sz)[0],picHelper.toXY(j,sz)[1],k,sz)
                     tmp=dataGen.imgToData(tmp)
                     tmp=tmp[0]
                     batch.append(tmp)
                     if len(batch)>=buffer_size:
-                        runBatch(batch,ops,ret)
+                        runBatch(batch,ops,ret,sz)
                         batch=[]
                         ops=[]
     
-    runBatch(batch,ops,ret)
+    runBatch(batch,ops,ret,sz)
     batch=[]
     ops=[]
     
@@ -103,16 +103,16 @@ def getAVM2(img_dir,save_dir,sz):
                     ret[i][j][k]=0
                 else:
                     ops.append((i,j,k))
-                    tmp=dataGen.getEdge(img,picHelper.toXY(i)[0],picHelper.toXY(i)[1],picHelper.toXY(j)[0],picHelper.toXY(j)[1],k,sz)
+                    tmp=dataGen.getEdge(img,picHelper.toXY(i,sz)[0],picHelper.toXY(i,sz)[1],picHelper.toXY(j,sz)[0],picHelper.toXY(j,sz)[1],k,sz)
                     tmp=dataGen.imgToData(tmp)
                     tmp=tmp[0]
                     batch.append(tmp)
                     if len(batch)>=buffer_size:
-                        runBatch(batch,ops,ret)
+                        runBatch(batch,ops,ret,sz)
                         batch=[]
                         ops=[]
     
-    runBatch(batch,ops,ret)
+    runBatch(batch,ops,ret,sz)
     batch=[]
     ops=[]
     
@@ -125,9 +125,9 @@ def getAVM2(img_dir,save_dir,sz):
                     f.write('%d %d %d %.3f\n'%(i,j,k,ret[i][j][k]))
 
 def main():
-    #getAVM('D:/MyPython/data/data_train/64/1234.png','D:/MyPython/huawei-honorcup-2-shared/CNN/matrix/1234.txt',64)
-    for i in range(2400,2410):
-        getAVM('D:/MyPython/data/data_test1_blank/64/%d.png'%i,'D:/MyPython/huawei-honorcup-2-shared/CNN/matrix1/64/%d.txt'%i,64)
+    getAVM2('D:/MyPython/data/data_train/64-sources/1235.png','D:/MyPython/huawei-honorcup-2-shared/CNN/matrix/1235.avm',64)
+    #for i in range(2400,2410):
+    #    getAVM('D:/MyPython/data/data_test1_blank/64/%d.png'%i,'D:/MyPython/huawei-honorcup-2-shared/CNN/matrix1/64/%d.txt'%i,64)
 
 
 if __name__=='__main__':

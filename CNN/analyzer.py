@@ -56,22 +56,50 @@ def isAdjID(id1,id2,con,sz=None):
     else:
         return False
 
+def readAVM(avm_dir,sz,new=None):
+    ret=[]
+    if new==None:
+        if avm_dir.endswith('.avm'):
+            new=True
+        else:
+            new=False
+    if new:
+        ret2=np.zeros(((512//sz)**2,(512//sz)**2,4))
+        print('Reading file %s , format=new'%avm_dir)
+        with open(avm_dir) as f:
+            while True:
+                s=f.readline()
+                if s=='':
+                    break
+                tmp=s.split(' ')
+                ret2[int(tmp[0])][int(tmp[1])][int(tmp[2])]=float(tmp[3])
+        
+        for i in range((512//sz)**2):
+            for j in range((512//sz)**2):
+                for k in range(4):
+                    ret.append((i,j,k,ret2[i][j][k]))
+    
+    else:
+        print('Reading file %s , format=old'%avm_dir)
+        with open(avm_dir) as f:
+            for i in range((512//sz)**2):
+                for j in range((512//sz)**2):
+                    tmp=list(map(float,f.readline().split(' ')[:-1]))
+                    for k in range(4):
+                        ret.append((i,j,k,tmp[k]))
+                f.readline()
+    return ret
 
 def analyzeAVM(avm_dir,sz):
     con=[]
     uncon=[]
-    with open(avm_dir) as f:
-        for i in range((512//sz)**2):
-            for j in range((512//sz)**2):
-                tmp=list(map(float,f.readline().split(' ')[:-1]))
-                for k in range(4):
-                    #print(i,j,k)
-                    x=tmp[k]
-                    if isAdjID(i,j,k,sz):
-                        con.append((i,j,k,x))
-                    else:
-                        uncon.append((i,j,k,x))
-            f.readline()
+    ret=readAVM(avm_dir,sz)
+    for i in ret:
+        if isAdjID(i[0],i[1],i[2],sz):
+            con.append(i)
+        else:
+            uncon.append(i)
+    
     plt.subplot(221)
     plt.hist(list(map(lambda x:x[3],con)),100)
     plt.title('Connected')
@@ -92,16 +120,20 @@ def analyzeAVM(avm_dir,sz):
     plt.subplot(223)
     plt.hist(list(map(lambda x:x[3],rtow)),100)
     plt.title('Right to Wrong')
+    plt.xlabel('Accuracy: %.3f%%'%((1-len(rtow)/len(con))*100))
 
     plt.subplot(224)
     plt.hist(list(map(lambda x:x[3],wtor)),100)
     plt.title('Wrong to Right')
+    plt.xlabel('Accuracy: %.3f%%'%((1-len(wtor)/len(uncon))*100))
+
+    plt.suptitle('Total: %.3f%%'%(((1-len(rtow)/len(con))*(sz-1)+(1-len(wtor)/len(uncon)))/sz*100),fontsize='medium')
 
     plt.tight_layout()
     plt.show()
 
 def main():
-    analyzeAVM('D:/MyPython/huawei-honorcup-2-shared/CNN/matrix/32-sources/0600.txt',32)
+    analyzeAVM('D:/MyPython/huawei-honorcup-2-shared/CNN/matrix/1235.avm',64)
 
 if __name__=='__main__':
     main()
