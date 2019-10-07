@@ -132,8 +132,17 @@ def analyzeAVM(avm_dir,sz):
     plt.tight_layout()
     plt.show()
 
+    #for i in wtor:
+    #    print(i)
+    #    dataGen.getEdge(picHelper.getImage(1200,True,64),
+    #                    picHelper.toXY(i[0],sz)[0],
+    #                    picHelper.toXY(i[0],sz)[1],
+    #                    picHelper.toXY(i[1],sz)[0],
+    #                    picHelper.toXY(i[1],sz)[1],
+    #                    i[2],64,32).show()
+
 def main():
-    analyzeAVM('D:/MyPython/huawei-honorcup-2-shared/CNN/matrix/1200_test.avm',64)
+    analyzeAVM('D:/MyPython/huawei-honorcup-2-shared/CNN/matrix/1200_test.txt',64)
 
 if __name__=='__main__':
     main()

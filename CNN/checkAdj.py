@@ -15,7 +15,12 @@ buffer_size=1024
 size=64
 width=32
 
-pure_var=0.001
+pure_var=0.0005
+bf_arg1=0.01
+bf_arg2=64
+
+def revCon(con):
+    return [2,3,0,1][con]
 
 def init():
     global model
@@ -57,12 +62,14 @@ def bruteForce(dat,sz=None,w=None):
         pure1=True
     if var2[0]<pure_var and var2[1]<pure_var and var2[2]<pure_var:
         pure2=True
-    avg1=dat1.mean(axis=0)
-    avg2=dat2.mean(axis=0)
-    dif=avg1-avg2
-    dif[0]=abs(dif[0])
-    dif[1]=abs(dif[1])
-    dif[2]=abs(dif[2])
+    dif=(dat1-dat2).mean(axis=1)
+    for i in range(sz):
+        dif[i]=abs(dif[i])
+    diff=0
+    dif.sort()
+    for i in range(bf_arg2):
+        diff+=dif[sz-i-1]
+    diff/=bf_arg2
     #print(dat1)
     #print(dat2)
     #print()
@@ -75,9 +82,9 @@ def bruteForce(dat,sz=None,w=None):
     #print(dif)
     #print()
     if pure1 and pure2:
-        return np.tanh(1/(dif.max()*50))
+        return np.tanh(bf_arg1/diff)
     elif pure1 or pure2:
-        return np.tanh(1/(dif.max()*50))/10
+        return np.tanh(bf_arg1/diff)/10
     else:
         return -1
 
@@ -108,6 +115,7 @@ def getAVM(img_dir,save_dir,sz=None,w=None):
         w=width
     
     ret=np.empty(((512//sz)**2,(512//sz)**2,4))
+    ret.fill(-1)
     img=Image.open(img_dir)
     ops=[]
     batch=[]
@@ -116,20 +124,25 @@ def getAVM(img_dir,save_dir,sz=None,w=None):
             for k in range(4):
                 if i==j:
                     ret[i][j][k]=0
-                else:
-                    ops.append((i,j,k))
-                    tmp=dataGen.getEdge(img,picHelper.toXY(i,sz)[0],picHelper.toXY(i,sz)[1],picHelper.toXY(j,sz)[0],picHelper.toXY(j,sz)[1],k,sz,w)
-                    tmp=dataGen.imgToData(tmp)
-                    tmp=tmp[0]
-                    bf=bruteForce(tmp)
-                    if bf!=-1:
-                        ret[i][j][k]=bf
-                        continue
-                    batch.append(tmp)
-                    if len(batch)>=buffer_size:
-                        runBatch(batch,ops,ret,sz)
-                        batch=[]
-                        ops=[]
+                if ret[j][i][revCon(k)]!=-1:
+                    ret[i][j][k]=ret[j][i][revCon(k)]
+                    continue
+                tmp=dataGen.getEdge(img,picHelper.toXY(i,sz)[0],picHelper.toXY(i,sz)[1],picHelper.toXY(j,sz)[0],picHelper.toXY(j,sz)[1],k,sz,6)
+                tmp=dataGen.imgToData(tmp)
+                tmp=tmp[0]
+                bf=bruteForce(tmp,sz,6)
+                if bf!=-1:
+                    ret[i][j][k]=bf
+                    continue
+                tmp=dataGen.getEdge(img,picHelper.toXY(i,sz)[0],picHelper.toXY(i,sz)[1],picHelper.toXY(j,sz)[0],picHelper.toXY(j,sz)[1],k,sz,w)
+                tmp=dataGen.imgToData(tmp)
+                tmp=tmp[0]
+                ops.append((i,j,k))
+                batch.append(tmp)
+                if len(batch)>=buffer_size:
+                    runBatch(batch,ops,ret,sz)
+                    batch=[]
+                    ops=[]
     
     runBatch(batch,ops,ret,sz)
     batch=[]
@@ -154,6 +167,7 @@ def getAVM2(img_dir,save_dir,sz=None,w=None):
         w=width
     
     ret=np.empty(((512//sz)**2,(512//sz)**2,4))
+    ret.fill(-1)
     img=Image.open(img_dir)
     ops=[]
     batch=[]
@@ -162,23 +176,26 @@ def getAVM2(img_dir,save_dir,sz=None,w=None):
             for k in range(4):
                 if i==j:
                     ret[i][j][k]=0
-                else:
-                    tmp=dataGen.getEdge(img,picHelper.toXY(i,sz)[0],picHelper.toXY(i,sz)[1],picHelper.toXY(j,sz)[0],picHelper.toXY(j,sz)[1],k,sz,6)
-                    tmp=dataGen.imgToData(tmp)
-                    tmp=tmp[0]
-                    bf=bruteForce(tmp,sz,6)
-                    if bf!=-1:
-                        ret[i][j][k]=bf
-                        continue
-                    tmp=dataGen.getEdge(img,picHelper.toXY(i,sz)[0],picHelper.toXY(i,sz)[1],picHelper.toXY(j,sz)[0],picHelper.toXY(j,sz)[1],k,sz,w)
-                    tmp=dataGen.imgToData(tmp)
-                    tmp=tmp[0]
-                    ops.append((i,j,k))
-                    batch.append(tmp)
-                    if len(batch)>=buffer_size:
-                        runBatch(batch,ops,ret,sz)
-                        batch=[]
-                        ops=[]
+                    continue
+                if ret[j][i][revCon(k)]!=-1:
+                    ret[i][j][k]=ret[j][i][revCon(k)]
+                    continue
+                tmp=dataGen.getEdge(img,picHelper.toXY(i,sz)[0],picHelper.toXY(i,sz)[1],picHelper.toXY(j,sz)[0],picHelper.toXY(j,sz)[1],k,sz,6)
+                tmp=dataGen.imgToData(tmp)
+                tmp=tmp[0]
+                bf=bruteForce(tmp,sz,6)
+                if bf!=-1:
+                    ret[i][j][k]=bf
+                    continue
+                tmp=dataGen.getEdge(img,picHelper.toXY(i,sz)[0],picHelper.toXY(i,sz)[1],picHelper.toXY(j,sz)[0],picHelper.toXY(j,sz)[1],k,sz,w)
+                tmp=dataGen.imgToData(tmp)
+                tmp=tmp[0]
+                ops.append((i,j,k))
+                batch.append(tmp)
+                if len(batch)>=buffer_size:
+                    runBatch(batch,ops,ret,sz)
+                    batch=[]
+                    ops=[]
     
     runBatch(batch,ops,ret,sz)
     batch=[]
@@ -193,7 +210,7 @@ def getAVM2(img_dir,save_dir,sz=None,w=None):
                     f.write('%d %d %d %.3f\n'%(i,j,k,ret[i][j][k]))
 
 def main():
-    getAVM2('D:/MyPython/data/data_train/64-sources/1200.png','D:/MyPython/huawei-honorcup-2-shared/CNN/matrix/1200_test.avm',64,32)
+    getAVM('D:/MyPython/data/data_train/64-sources/1223.png','D:/MyPython/huawei-honorcup-2-shared/CNN/matrix/1223_test.txt',64,32)
     #for i in range(2400,2410):
     #    getAVM('D:/MyPython/data/data_test1_blank/64/%d.png'%i,'D:/MyPython/huawei-honorcup-2-shared/CNN/matrix1/64/%d.txt'%i,64)
     #img=picHelper.getImage(1200,True,64)

@@ -9,8 +9,10 @@ size=64
 width=32
 data_dir='D:/MyPython/huawei-honorcup-2-shared/CNN/data/'
 
-def getBlockFromImg(img,x,y):
-    box=(size*x,size*y,size*(x+1),size*(y+1))
+def getBlockFromImg(img,x,y,sz=None):
+    if sz==None:
+        sz=size
+    box=(sz*x,sz*y,sz*(x+1),sz*(y+1))
     return img.crop(box)
 
 def imgToData(img):
@@ -46,14 +48,14 @@ def getEdge(img,x1,y1,x2,y2,con,sz=None,w=None):
         con-=2
     if con==0:
         ret=Image.new('RGB',(sz*2,sz))
-        ret.paste(getBlockFromImg(img,x1,y1),(sz,0))
-        ret.paste(getBlockFromImg(img,x2,y2),(0,0))
+        ret.paste(getBlockFromImg(img,x1,y1,sz),(sz,0))
+        ret.paste(getBlockFromImg(img,x2,y2,sz),(0,0))
         ret=ret.rotate(90,expand=True)
         return ret.crop((0,sz-w//2,sz,sz+w//2))
     elif con==1:
         ret=Image.new('RGB',(sz,sz*2))
-        ret.paste(getBlockFromImg(img,x1,y1),(0,sz))
-        ret.paste(getBlockFromImg(img,x2,y2),(0,0))
+        ret.paste(getBlockFromImg(img,x1,y1,sz),(0,sz))
+        ret.paste(getBlockFromImg(img,x2,y2,sz),(0,0))
         return ret.crop((0,sz-w//2,sz,sz+w//2))
         
 
