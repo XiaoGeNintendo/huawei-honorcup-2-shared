@@ -49,7 +49,7 @@ def runBatch(batch,ops,ret):
         ret[i][j][k]=p[op]
 
 
-def getMatrix(img_dir,save_dir,sz):
+def getAVM(img_dir,save_dir,sz):
     global model
     if model==None:
         init()
@@ -87,11 +87,47 @@ def getMatrix(img_dir,save_dir,sz):
                 f.write('\n')
             f.write('\n')
 
+def getAVM2(img_dir,save_dir,sz):
+    global model
+    if model==None:
+        init()
+    
+    ret=np.empty(((512//sz)**2,(512//sz)**2,4))
+    img=Image.open(img_dir)
+    ops=[]
+    batch=[]
+    for i in range((512//sz)**2):
+        for j in range((512//sz)**2):
+            for k in range(4):
+                if i==j:
+                    ret[i][j][k]=0
+                else:
+                    ops.append((i,j,k))
+                    tmp=dataGen.getEdge(img,picHelper.toXY(i)[0],picHelper.toXY(i)[1],picHelper.toXY(j)[0],picHelper.toXY(j)[1],k,sz)
+                    tmp=dataGen.imgToData(tmp)
+                    tmp=tmp[0]
+                    batch.append(tmp)
+                    if len(batch)>=buffer_size:
+                        runBatch(batch,ops,ret)
+                        batch=[]
+                        ops=[]
+    
+    runBatch(batch,ops,ret)
+    batch=[]
+    ops=[]
+    
+    with open(save_dir,'w') as f:
+        for i in range((512//sz)**2):
+            for j in range((512//sz)**2):
+                for k in range(4):
+                    if ret[i][j][k]<0.001:
+                        continue
+                    f.write('%d %d %d %.3f\n'%(i,j,k,ret[i][j][k]))
 
 def main():
-    #getMatrix('D:/MyPython/data/data_train/64/1234.png','D:/MyPython/huawei-honorcup-2-shared/CNN/matrix/1234.txt',64)
+    #getAVM('D:/MyPython/data/data_train/64/1234.png','D:/MyPython/huawei-honorcup-2-shared/CNN/matrix/1234.txt',64)
     for i in range(2400,2410):
-        getMatrix('D:/MyPython/data/data_test1_blank/64/%d.png'%i,'D:/MyPython/huawei-honorcup-2-shared/CNN/matrix1/64/%d.txt'%i,64)
+        getAVM('D:/MyPython/data/data_test1_blank/64/%d.png'%i,'D:/MyPython/huawei-honorcup-2-shared/CNN/matrix1/64/%d.txt'%i,64)
 
 
 if __name__=='__main__':

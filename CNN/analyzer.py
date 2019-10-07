@@ -13,7 +13,9 @@ model=None
 verb=True
 batch_size=32
 buffer_size=1024
-p=0.5
+pcon=0.8
+puncon=0.2
+size=32
 
 def init():
     global model
@@ -24,9 +26,11 @@ def init():
     #model.summary()
 
 
-def isAdjID(id1,id2,con):
-    x1,y1=picHelper.toXY(id1)
-    x2,y2=picHelper.toXY(id2)
+def isAdjID(id1,id2,con,sz=None):
+    if sz==None:
+        sz=size
+    x1,y1=picHelper.toXY(id1,sz)
+    x2,y2=picHelper.toXY(id2,sz)
     if not picHelper.isAdj(x1,y1,x2,y2):
         return False
     if con==0:
@@ -57,27 +61,47 @@ def analyzeAVM(avm_dir,sz):
     con=[]
     uncon=[]
     with open(avm_dir) as f:
-        for i in range(sz):
-            for j in range(sz):
+        for i in range((512//sz)**2):
+            for j in range((512//sz)**2):
                 tmp=list(map(float,f.readline().split(' ')[:-1]))
                 for k in range(4):
                     #print(i,j,k)
                     x=tmp[k]
-                    if isAdjID(i,j,k):
-                        if x<0.8:
-                            con.append((i,j,k,x))
+                    if isAdjID(i,j,k,sz):
+                        con.append((i,j,k,x))
                     else:
-                        if x>0.1:
-                            uncon.append((i,j,k,x))
+                        uncon.append((i,j,k,x))
             f.readline()
-    plt.subplot(211)
+    plt.subplot(221)
     plt.hist(list(map(lambda x:x[3],con)),100)
-    plt.subplot(212)
+    plt.title('Connected')
+    
+    plt.subplot(222)
     plt.hist(list(map(lambda x:x[3],uncon)),100)
+    plt.title('Unconnected')
+
+    rtow=[]
+    wtor=[]
+    for i in con:
+        if i[3]<pcon:
+            rtow.append(i)
+    for i in uncon:
+        if i[3]>puncon:
+            wtor.append(i)
+            
+    plt.subplot(223)
+    plt.hist(list(map(lambda x:x[3],rtow)),100)
+    plt.title('Right to Wrong')
+
+    plt.subplot(224)
+    plt.hist(list(map(lambda x:x[3],wtor)),100)
+    plt.title('Wrong to Right')
+
+    plt.tight_layout()
     plt.show()
 
 def main():
-    analyzeAVM('D:/MyPython/huawei-honorcup-2-shared/CNN/matrix/64/1200.txt',64)
+    analyzeAVM('D:/MyPython/huawei-honorcup-2-shared/CNN/matrix/32-sources/0600.txt',32)
 
 if __name__=='__main__':
     main()

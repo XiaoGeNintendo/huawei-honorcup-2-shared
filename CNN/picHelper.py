@@ -5,20 +5,26 @@ import random
 from PIL import Image
 
 data_dir='D:/MyPython/data/data_train/'
-size=64
-width=32
+size=32
+width=16
 
-def getImage(k,src=False):
-    full_dir=os.path.join(data_dir,str(size)+['','-sources'][src],str(k)+'.png')
+def getImage(k,src=False,sz=None):
+    if sz==None:
+        sz=size
+    full_dir=os.path.join(data_dir,str(sz)+['','-sources'][src],str(k).zfill(4)+'.png')
     #print('Opening %s'%full_dir)
     img=Image.open(full_dir)
     return img
 
-def toXY(ID):
-    return (ID%(512//size),ID//(512//size))
+def toXY(ID,sz=None):
+    if sz==None:
+        sz=size
+    return (ID%(512//sz),ID//(512//sz))
 
-def toID(x,y):
-    return y*(512//size)+x
+def toID(x,y,sz=None):
+    if sz==None:
+        sz=size
+    return y*(512//sz)+x
 
 def isAdj(x1,y1,x2,y2):
     if x1==x2 and abs(y1-y2)<=1:
@@ -27,12 +33,16 @@ def isAdj(x1,y1,x2,y2):
         return True
     return False
 
-def getBlockByID(k,src,ID):
-    xy=toXY(ID)
-    return getBlock(k,src,xy[0],xy[1])
+def getBlockByID(k,src,ID,sz=None):
+    if sz==None:
+        sz=size
+    xy=toXY(ID,sz)
+    return getBlock(k,src,xy[0],xy[1],sz)
 
-def getBlock(k,src,x,y):
-    box=(size*x,size*y,size*(x+1),size*(y+1))
+def getBlock(k,src,x,y,sz=None):
+    if sz==None:
+        sz=size
+    box=(sz*x,sz*y,sz*(x+1),sz*(y+1))
     return getImage(k,src).crop(box)
 
 def getRandAdj(k):
