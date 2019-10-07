@@ -133,7 +133,7 @@ def analyzeAVM(avm_dir,sz):
     plt.show()
 
 def main():
-    analyzeAVM('D:/MyPython/huawei-honorcup-2-shared/CNN/matrix/1235.avm',64)
+    analyzeAVM('D:/MyPython/huawei-honorcup-2-shared/CNN/matrix/1200_test.avm',64)
 
 if __name__=='__main__':
     main()
