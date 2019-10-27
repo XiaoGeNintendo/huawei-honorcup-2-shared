@@ -7,7 +7,7 @@ import os
 import random
 from PIL import Image
 
-model_dir='D:/MyPython/huawei-honorcup-2-shared/CNN/saved_models/model_4.h5'
+model_dir='D:/MyPython/huawei-honorcup-2-shared/CNN/saved_models/model_6.h5'
 model=None
 verb=True
 batch_size=32
@@ -45,6 +45,7 @@ def check(img_dir,id1,id2,con,sz=None):
 
 
 def bruteForce(dat,sz=None,w=None):
+    return -1
     if sz==None:
         sz=size
     if w==None:
@@ -210,7 +211,7 @@ def getAVM2(img_dir,save_dir,sz=None,w=None):
                     f.write('%d %d %d %.3f\n'%(i,j,k,ret[i][j][k]))
 
 def main():
-    getAVM('D:/MyPython/data/data_train/64-sources/1223.png','D:/MyPython/huawei-honorcup-2-shared/CNN/matrix/1223_test.txt',64,32)
+    getAVM2('D:/MyPython/data/data_train/32-sources/0601.png','D:/MyPython/huawei-honorcup-2-shared/CNN/matrix/0601_cnn.avm',32,16)
     #for i in range(2400,2410):
     #    getAVM('D:/MyPython/data/data_test1_blank/64/%d.png'%i,'D:/MyPython/huawei-honorcup-2-shared/CNN/matrix1/64/%d.txt'%i,64)
     #img=picHelper.getImage(1200,True,64)
